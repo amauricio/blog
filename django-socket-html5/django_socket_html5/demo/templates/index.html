@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mis Mensajes</title>
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+    <script>
+    var socket = new WebSocket('ws://192.168.1.2:3030/ws');
+      socket.onopen = () => {
+        console.log('[DEBUG] Socker Begin')
+      };
+      socket.onmessage = (e) => {
+        var data = JSON.parse(e.data);
+        if($('#render_'+data.id).size()>0){
+          $('#render_'+data.id).html(data.message);
+        }else{
+          var elem = $('<li id="render_'+data.id+'">'+ data.message +'</li>');
+          elem.hide();
+          $('.news').prepend(elem)
+          elem.slideToggle();
+        }
+      };
+      socket.onerror = (e) => {
+        console.warn('[DEBUG] Socket Error');
+      };
+      socket.onclose = (e) => {
+        console.warn('[DEBUG] Socket Closed');
+      };
+    </script>
+    <style media="screen">
+      *{
+        box-sizing: border-box;
+        margin: 0
+      }
+      body{
+        background: #3894ff;
+        margin: 0;
+        font-family: Arial;
+      }
+      .container{
+        max-width: 400px;
+        margin: 0 auto;
+        padding-top: 90px;
+      }
+      .main{
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 1px 1px 40px rgba(0,0,0,.2);
+      }
+      h2{
+        color:#777;
+        font-weight: normal;
+        font-size: 30px;
+      }
+      span{
+        display: block;
+        font-size: 24px;
+        margin: 30px 0 0 0;
+        color:#999;
+      }
+      b{
+        color:#3894ff
+      }
+      .news{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .news li{
+        background: rgba(255,255,255,.7);
+        margin-top: 10px;
+        padding: 20px;
+        font-size: 18px;
+        color:#444;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main">
+        <h2>¡Bienvenido!</h2>
+        <span>Tienes <b>{{ count_messages }}</b> mensaje(s)</span>
+      </div>
+      <ul class="news">
+      </ul>
+    </div>
+  </body>
+</html>
