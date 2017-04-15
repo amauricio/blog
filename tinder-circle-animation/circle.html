@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tinder Circle Animation</title>
+    <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+      html,body{
+        height: 100%;
+      }
+      .content-animation{
+        max-width: 800px;
+        margin: 0 auto;
+        height: 100%;
+        display: table;
+        vertical-align: middle;
+      }
+      .wrapper{
+        display: table-cell;
+        vertical-align: middle;
+      }
+    </style>
+    <script
+			  src="https://code.jquery.com/jquery-2.2.4.min.js"
+			  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+			  crossorigin="anonymous"></script>
+    <script>
+    var TinderCircle = function(cls){
+      this.color = 'rgba(255,0,0,.2)';
+      this.borderWidth=3;
+      this.borderColor='#ff0000';
+      this.radius=400;
+      this.size=100;
+
+      this.time = 3
+
+      this.content = $(cls);
+      this.content.css({position:'relative'});
+      var tmp_data = this.content.html();
+      var new_content = $('<div/>');
+      new_content.css({
+        borderRadius: this.radius,
+        overflow: 'hidden',
+        position:'relative',
+        zIndex:1,
+        width: this.size,
+        height: this.size,
+      });
+      this.content.html( new_content.html(tmp_data) );
+      var c = this.content;
+      var circle = $('<div/>')
+      circle.css({
+        position:'absolute',
+        top:0,
+        left:0,
+        width:c.width(),
+        height:c.height(),
+        borderRadius: this.radius,
+        background:this.color,
+        borderColor:this.borderColor,
+        borderWidth:this.borderWidth,
+        borderStyle:'solid'
+      });
+      //Transition animation
+      circle.css({'transition':this.time+'s ease-out'});
+
+      this.render = function(){
+        var me = this;
+        var c = me.content;
+        var new_item = circle.clone();
+        c.append(new_item);
+        var n_time = me.time*1000;
+        setTimeout(function(){
+          new_item.css({'transform':'scale(2.5)', 'opacity':0});
+          setTimeout(function(){
+            new_item.remove();
+          }, n_time);
+          me.render();
+        }, n_time/2);
+
+      }
+      return this;
+    }
+    $(function(){
+        var circle = new TinderCircle('.profile');
+        circle.render();
+    })
+    </script>
+  </head>
+  <body>
+    <div class="content-animation">
+      <div class="wrapper">
+        <div class="profile">
+          <img  src="photo.jpg" width='100' alt="">
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
